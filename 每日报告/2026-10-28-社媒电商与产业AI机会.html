@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI & Agent 创业机会日报</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --card:#ffffff; --ink:#1a2233; --sub:#5b6474; --line:#e6eaf2;
+    --brand:#3b5bfd; --brand2:#7a3bff; --accent:#ff5c72; --gold:#f59e0b;
+    --hi:#ef4444; --mid:#3b82f6; --low:#94a3b8;
+    --shadow:0 6px 24px rgba(26,34,51,.07);
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+    background:linear-gradient(180deg,#eef1fb 0%,var(--bg) 260px);
+    color:var(--ink); line-height:1.65; padding-bottom:60px;
+  }
+  .container{max-width:1000px; margin:0 auto; padding:0 20px}
+
+  /* ===== 头部 ===== */
+  header{
+    padding:34px 0 22px;
+    background:radial-gradient(1200px 300px at 50% -80px, rgba(59,91,253,.18), transparent);
+  }
+  .eyebrow{display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--brand);
+    background:rgba(59,91,253,.08); border:1px solid rgba(59,91,253,.18); padding:4px 12px; border-radius:999px}
+  h1{font-size:30px; letter-spacing:.5px; margin:12px 0 6px}
+  h1 .grad{
+    background:linear-gradient(90deg,var(--brand),var(--brand2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .subtitle{color:var(--sub); font-size:14.5px; max-width:760px}
+  .meta{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px}
+  .chip{font-size:13px; color:var(--sub); background:var(--card); border:1px solid var(--line);
+    padding:5px 12px; border-radius:999px; box-shadow:var(--shadow)}
+
+  /* ===== 控制条 ===== */
+  .controls{display:flex; flex-wrap:wrap; align-items:center; gap:14px;
+    margin:20px 0 26px; padding:14px 18px; background:var(--card); border:1px solid var(--line);
+    border-radius:16px; box-shadow:var(--shadow)}
+  .tts-btn{
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none;
+    border:none; padding:11px 20px; border-radius:12px; font-size:15px; font-weight:600; color:#fff;
+    background:linear-gradient(90deg,var(--brand),var(--brand2));
+    box-shadow:0 6px 18px rgba(59,91,253,.35); transition:transform .15s, box-shadow .15s;
+  }
+  .tts-btn:hover{transform:translateY(-1px)}
+  .tts-btn:active{transform:translateY(0)}
+  .tts-btn.playing{background:linear-gradient(90deg,var(--accent),#ff7a5c);
+    box-shadow:0 6px 18px rgba(255,92,114,.35); animation:pulse 1.6s infinite}
+  .tts-btn .ico{font-size:18px; line-height:1}
+  .tts-hint{font-size:13px; color:var(--sub)}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+  /* ===== 概览统计 ===== */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:30px}
+  .stat{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow)}
+  .stat b{display:block; font-size:26px; letter-spacing:.5px}
+  .stat span{font-size:13px; color:var(--sub)}
+
+  /* ===== 分区标题 ===== */
+  .section{margin-bottom:34px}
+  .section-title{display:flex; align-items:center; gap:10px; font-size:21px; font-weight:700; margin-bottom:6px}
+  .section-title .bar{width:6px; height:22px; border-radius:3px; background:linear-gradient(180deg,var(--brand),var(--brand2))}
+  .section-title.social .bar{background:linear-gradient(180deg,#ff5c72,#ff8a5c)}
+  .section-desc{color:var(--sub); font-size:13.5px; margin-bottom:16px}
+
+  /* ===== 卡片 ===== */
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:var(--shadow); margin-bottom:14px; overflow:hidden;
+    animation:fadeUp .5s both; transition:transform .18s, box-shadow .18s;
+  }
+  .card:hover{transform:translateY(-2px); box-shadow:0 12px 30px rgba(26,34,51,.10)}
+  .card-head{padding:16px 20px; cursor:pointer; display:flex; gap:14px; align-items:flex-start}
+  .card-index{flex:0 0 auto; width:30px; height:30px; border-radius:9px; display:grid; place-items:center;
+    font-weight:700; font-size:14px; color:#fff; background:linear-gradient(135deg,var(--brand),var(--brand2))}
+  .section.social .card-index{background:linear-gradient(135deg,#ff5c72,#ff8a5c)}
+  .card-main{flex:1 1 auto; min-width:0}
+  .card-title-row{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
+  .card-title{font-size:16.5px; font-weight:700}
+  .badge{font-size:11.5px; padding:2px 9px; border-radius:999px; white-space:nowrap; font-weight:600}
+  .b-hi{background:#fee2e2; color:#b91c1c} .b-mid{background:#dbeafe; color:#1d4ed8} .b-low{background:#eef2f7; color:#64748b}
+  .b-easy{background:#dcfce7; color:#15803d} .b-med{background:#fef3c7; color:#b45309} .b-hard{background:#fde2e2; color:#b91c1c}
+  .summary{color:var(--sub); font-size:13.5px; margin-top:4px}
+  .chev{flex:0 0 auto; color:#9aa4b5; font-size:13px; margin-top:6px; transition:transform .25s}
+  .card.open .chev{transform:rotate(180deg)}
+
+  .expandable{display:grid; grid-template-rows:0fr; transition:grid-template-rows .32s ease}
+  .card.open .expandable{grid-template-rows:1fr}
+  .expand-inner{overflow:hidden}
+  .card-body{border-top:1px dashed var(--line); padding:16px 20px 18px; display:grid; gap:10px}
+  .row{display:grid; grid-template-columns:96px 1fr; gap:10px; font-size:13.5px}
+  .row .k{color:var(--sub); font-weight:600; flex-shrink:0}
+  .row .v{color:var(--ink)}
+  .row .v a{color:var(--brand); text-decoration:none}
+  .tag{display:inline-block; background:#f1f4fb; color:#3f4a63; border-radius:6px; padding:1px 8px;
+    font-size:12.5px; margin:2px 4px 2px 0}
+  @media(max-width:640px){ .row{grid-template-columns:1fr} .row .k{margin-bottom:-6px} }
+
+  footer{margin-top:36px; padding-top:20px; border-top:1px solid var(--line);
+    color:#8a93a5; font-size:12.5px; line-height:1.7}
+  footer a{color:#8a93a5}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(14px)}to{opacity:1; transform:none}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <span class="eyebrow">📈 AI × Agent 创业机会日报</span>
+    <h1><span class="grad" id="report-title">社媒电商 AI 与 Agent 市场机会</span></h1>
+    <p class="subtitle" id="report-subtitle">聚焦「社媒电商 AI 提效/自动化/无人化」与「传统行业 AI+智能体+自动化改造」的真实需求、变现路径与可落地的订单机会。</p>
+    <div class="meta">
+      <span class="chip" id="report-date">📅 2026-10-18</span>
+      <span class="chip">🕖 每日 07:00 自动更新</span>
+      <span class="chip">🎯 1~2 人 · 年利润 100~200 万</span>
+    </div>
+  </header>
+
+  <div class="controls">
+    <button class="tts-btn" id="ttsBtn" type="button">
+      <span class="ico" id="ttsIco">▶</span><span id="ttsLabel">语音播报</span>
+    </button>
+    <span class="tts-hint" id="ttsHint">免费 · 浏览器内置语音合成 · 点击播报/暂停/继续</span>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div id="report"></div>
+
+  <footer id="footer">
+    生成时间：<span id="gen-time"></span>　|　内容由 DeepSeek 搜索 + 模型归纳生成，仅供参考与启发，不构成投资建议。<br>
+    数据来源：DeepSeek 搜索 API（每条机会内已标注需求信号与来源）。低谷（半价）时段：工作日 9:00–12:00、14:00–18:00 以外，及周末、法定节假日全天。
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   【每日只需替换下面这段数据】即可生成当日报告
+   ============================================================ */
+const REPORT = {"title": "社媒电商与产业AI Agent机会清单", "slug": "社媒电商与产业AI机会", "subtitle": "覆盖社媒电商AI提效/无人化与传统行业智能体改造两大方向的8个可落地机会", "opportunities": [{"domain": "social", "title": "数字人夜班直播合规代运营", "summary": "数字人成本降至百元级，中小商家缺运营与合规能力，夜班长尾时段代运营是真需求", "priority": "高", "difficulty": "中", "market": "数字人直播代运营", "pain": "真人主播贵且不能24小时在线；中小商家不懂平台规则、AI标识、肖像授权与数据留存，开播转化低", "signal": "京东×艾瑞《2026数字人电商直播白皮书》（2026-05-21）称入门方案降至数百元，监管要求显著标识AI身份、合法肖像授权、直播数据留存三年；CBNData（2025-11-24）称数字人制作成本降至数百至数万元；新华网（2026-01-20）称1688中小商户AI全托管渗透率仅15%", "customer": "产业带中小商家、本地生活门店、露营/服饰/食品等电商卖家", "product": "数字人直播间搭建+夜班代运营+合规包（话术库、AI标识、肖像授权、数据留存）", "monetize": "搭建费+月度代运营费+GMV增量分成", "revenue": "搭建3000-8000元/店，月费3000-6000元；签约40-60家可做到年营收150-250万元", "coldstart": "1）选1个产业带做3家样板店；2）沉淀品类话术库与夜班SOP；3）与数字人SaaS厂商、园区渠道合作分成", "benchmark": "京东数字人、硅基智能、灵犀深智", "risk": "各平台规则差异大；数字人同质化与消费者信任问题；严禁虚假宣传与绝对化用语"}, {"domain": "social", "title": "AI商品素材批量工厂", "summary": "抖音AI生成直播引流素材供给已超人工，单日可省万元，中小商家批量素材需求爆发", "priority": "高", "difficulty": "易", "market": "电商内容素材", "pain": "中小商家没有内容团队，高频上新缺短视频和商品卡素材，外包拍摄剪辑贵且慢", "signal": "新华网（2026-01-20）引抖音电商：AI生成直播引流素材供给量首次超过商家人工上传量，按单日人工1条100元、AI百条计算可日省万元；重庆市政府（2026-06-17）称今年618使用AI工具的商家数量同比激增", "customer": "抖音、视频号、小红书产业带商家与本地生活门店", "product": "品类选题库+批量生成短视频/商品卡+人工精修+发布排期", "monetize": "包月套餐、按条计费、爆款素材加价", "revenue": "1999-4999元/月/店；服务40-60家年营收约150-250万元", "coldstart": "1）锁定1个品类做10条对比测试；2）用投放数据证明素材效果；3）以“首月10条免费试跑”招募首批客户", "benchmark": "抖音即创、剪映、Canva", "risk": "平台对AI内容限流与同质化审核；需人工审校并补充实拍，避免纯批量灌水"}, {"domain": "social", "title": "1688中小商家AI轻托管", "summary": "1688头部商家AI全托管授权率40%，中小商户仅15%，轻托管可补运营缺口", "priority": "高", "difficulty": "中", "market": "B2B电商代运营", "pain": "78%为中小商户，普遍缺专业运营团队；订单库存数据零散，AI工具认知热但落地冷", "signal": "新华网（2026-01-20）称1688平台110多万商家中78%为中小商户，头部1万名商家AI全托管授权率40%，中小商户渗透率仅15%；商家反映数据零散、手工记录难对接生意模型", "customer": "1688、淘宝的中小工厂与批发商", "product": "AI店铺诊断+标题/主图/详情页优化+客服话术+周报，不触碰核心交易数据", "monetize": "诊断费+月度托管费+增量业绩分成", "revenue": "3000-8000元/月/店；服务30-50家年营收约150-300万元", "coldstart": "1）选3个产业带免费诊断20家；2）形成行业关键词与主图模板库；3）用30天询盘增长数据转付费", "benchmark": "1688生意助手、阿里妈妈", "risk": "平台官方工具可能替代；效果归因难，合同需设保底交付与退出条款"}, {"domain": "social", "title": "AI代理可读商品目录优化", "summary": "Shopify AI搜索订单一度增近13倍，商品若不能被Agent读取将失去新流量入口", "priority": "中", "difficulty": "中", "market": "智能体电商优化", "pain": "AI代理跨店比价选品，商家商品目录、库存、政策不结构化就读不到；平台对代理访问规则不一", "signal": "极客公园（2026-10-26）称Shopify 2026年一季度AI搜索订单同比增长近13倍、AI带来店铺流量增8倍，二季度回落至3倍；麦肯锡（2026-10-11）预计2030年智能体经手全球消费3-5万亿美元；Foresight News（2026-09-02）指出信任成本决定代理商业爆发点", "customer": "跨境独立站、DTC品牌、出海工厂", "product": "Agent可读性审计+结构化商品feed+FAQ/退换货政策/库存接口+AI可见性监控", "monetize": "审计费+实施费+年度监控订阅", "revenue": "审计5000-1.5万元，年费3-10万元；服务20-30家可做到年营收150-250万元", "coldstart": "1）做Shopify/店匠店铺的AI可读性审计报告；2）发布行业AI可见性榜单获客；3）与独立站建站服务商捆绑", "benchmark": "Shopify Catalog、MCP/AP2协议、GEO优化工具", "risk": "标准与平台政策早期多变；不能承诺AI推荐排名，交付以结构化覆盖率为准"}, {"domain": "industry", "title": "小工厂图纸拆单报价Agent", "summary": "黑湖智能体拆单准确率95%、2-3小时压到分钟级，小厂买不起整套系统", "priority": "高", "difficulty": "难", "market": "工业智能体", "pain": "小厂靠老师傅读图拆工序、报价，耗时且经验断层；多品种小批量订单换产频繁", "signal": "经济参考报（2026-10-22）称黑湖AI智能体拆单准确率95%以上，将2-3小时压缩到分钟级；搜狐（2026-07-06）称老师傅1-2小时工作现可1分钟完成；工信部等八部门提出2027年前推出1000个高水平工业智能体", "customer": "紧固件、机加工、钣金、注塑等中小工厂", "product": "图纸解析+工厂工艺知识库+自动拆单与报价单生成，本地部署并保留人工复核", "monetize": "实施费+年订阅费+按拆单量计费", "revenue": "首年5-15万元/厂；服务15-25家可做到年营收150-250万元", "coldstart": "1）聚焦1个细分工艺；2）收集100份历史图纸与报价单做标注；3）与产业园区、设备商联合试点", "benchmark": "黑湖小工单/黑湖智造、美云智数", "risk": "准确率与报价责任边界；图纸数据安全；必须绑定行业老师傅做知识校验"}, {"domain": "industry", "title": "外贸邮件订单录入Agent", "summary": "Oiki案例邮件订单处理30分钟降至12分钟，外贸与分销大量手工录单可复制", "priority": "高", "difficulty": "易", "market": "订单自动化", "pain": "客户订单散落在邮件和微信，销售手工读单、查库存、录ERP，响应慢且易错", "signal": "IBM（2026-03-23）案例：Oiki用watsonx Orchestrate从邮件提取产品代码与数量，平均处理时间从30分钟降至12分钟、减少60%，投标管理每天节省180分钟；央广网（2026-08-25）称五征集团盘库由3小时降至5分钟", "customer": "外贸公司、五金/化工/食品等分销商", "product": "邮箱/企微接入+订单解析+ERP对接+异常人工复核台", "monetize": "实施费+月度订阅+按单据量计费", "revenue": "实施3-8万元+月费2000-5000元；服务30家左右可做到年营收150万元", "coldstart": "1）先做金蝶/用友标准连接器；2）找3家外贸公司半自动试用；3）按字段准确率与节省工时收费", "benchmark": "IBM watsonx Orchestrate、n8n、Dify", "risk": "ERP接口复杂、客户数据隐私；首版保留人工确认，避免全自动错单"}, {"domain": "industry", "title": "制造企业AI数智员工落地包", "summary": "五征全员用智能体、盘库3小时变5分钟；区域制造企业缺场景化落地服务商", "priority": "高", "difficulty": "中", "market": "企业智能体服务", "pain": "企业有AI热情但缺场景梳理、系统连接与治理，试点多、规模化见效少", "signal": "央广网（2026-08-25）称五征集团客服巡检、盘库等场景全员高频使用，盘库3小时变5分钟；工商时报（2026-10-26）称今晧Agatha让数据查询时间缩短90%、跨部门沟通成本降40%；IDC调研称2025年已应用大模型及智能体的工业企业比例达47.5%", "customer": "营收1-10亿元的区域制造与商贸企业", "product": "3个标准智能体：客户巡检日报、经营数据问答、盘库/报表自动化，基于n8n/Dify+私有知识库", "monetize": "诊断费+单场景实施费+年度运维费", "revenue": "单场景5-15万元，年运维3-6万元；服务15-20家可做到年营收150-250万元", "coldstart": "1）推出“7天AI巡检”体验包；2）与地方工信部门、行业协会合办沙龙；3）沉淀3个标准场景案例白皮书", "benchmark": "夸夸菁领数智员工、今晧Agatha、Mercedes-Benz×n8n", "risk": "交付非标导致人力失控；数据权限与审计要求高；应聚焦标准场景、拒绝大定制"}, {"domain": "industry", "title": "小单快返AI履约经纪人", "summary": "黑湖把新品周期3个月缩到3周、起订量1万降到100，博主小单需要撮合与AI拆单", "priority": "中", "difficulty": "中", "market": "柔性制造撮合", "pain": "小红书博主和文创IP的小单找不到愿接的小厂；工厂不懂线上需求、报价慢、交期不可控", "signal": "经济参考报（2026-10-22）称黑湖AI智能体将新品上市周期从3个月缩短到3周、最小起订量从10000件降到100件，承接博主与文旅定制订单；新华网（2026-10-25）称服装机器人裁片分离成功率97%、缝纫合格率超98%", "customer": "小红书博主、新消费品牌、文旅IP及中小柔性工厂", "product": "小单需求标准化+AI报价拆单+工厂产能匹配+履约跟踪", "monetize": "撮合佣金+项目服务费+SaaS订阅", "revenue": "每单抽佣10-15%或收取项目服务费；月成交20-30单可做到年营收150-200万元", "coldstart": "1）聚焦服饰或文创1个品类；2）签5家可接小单的柔性工厂；3）免费服务10个博主打磨报价与验货SOP", "benchmark": "黑湖科技、SHEIN小单快返、艾图服装机器人", "risk": "品质与交期不可控会反噬口碑；先做轻撮合加验厂验货，不压库存"}], "date": "2026-10-28"};
+/* ============================================================
+   以下为渲染与语音播报逻辑，通常无需改动
+   ============================================================ */
+
+const DOMAIN_META = {
+  social:  { key:"social",  name:"一、社媒电商 AI 提效 · 自动化 · 无人化", desc:"面向电商/带货/内容运营场景，AI 替代重复人力、延长营业时长、放大投放 ROI。", emoji:"🛒" },
+  industry:{ key:"industry",name:"二、传统行业 AI + 智能体 + 自动化改造",      desc:"面向制造、外贸、零售、餐饮、物流、办公等场景，把 AI Agent 嵌入业务流程降本增效。", emoji:"🏭" }
+};
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function badge(priority){
+  if(priority==='高') return '<span class="badge b-hi">优先级 高</span>';
+  if(priority==='中') return '<span class="badge b-mid">优先级 中</span>';
+  return '<span class="badge b-low">优先级 低</span>';
+}
+function diffBadge(d){
+  if(d==='易') return '<span class="badge b-easy">落地 易</span>';
+  if(d==='难') return '<span class="badge b-hard">落地 难</span>';
+  return '<span class="badge b-med">落地 中</span>';
+}
+
+function render(){
+  const root = document.getElementById('report');
+  const statsEl = document.getElementById('stats');
+  document.getElementById('report-title').textContent = REPORT.title;
+  document.getElementById('report-subtitle').textContent = REPORT.subtitle;
+  document.getElementById('report-date').textContent = '📅 ' + REPORT.date;
+  document.title = REPORT.date + ' · ' + REPORT.title;
+
+  const list = REPORT.opportunities;
+  const hi = list.filter(o=>o.priority==='高').length;
+  statsEl.innerHTML = `
+    <div class="stat"><b>${list.length}</b><span>今日机会线索</span></div>
+    <div class="stat"><b>${hi}</b><span>高优先 · 建议先做</span></div>
+    <div class="stat"><b>${new Set(list.map(o=>o.domain)).size}</b><span>覆盖赛道</span></div>
+    <div class="stat"><b>100~200万</b><span>年度利润目标</span></div>`;
+
+  let html = '';
+  for(const meta of Object.values(DOMAIN_META)){
+    const items = list.filter(o=>o.domain===meta.key);
+    if(!items.length) continue;
+    html += `<div class="section ${meta.key}">
+      <div class="section-title">${meta.emoji}<span class="bar"></span>${meta.name}</div>
+      <div class="section-desc">${meta.desc}</div>`;
+    items.forEach((o,i)=>{
+      html += `
+      <article class="card" data-index="${list.indexOf(o)}">
+        <div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+          <div class="card-index">${list.indexOf(o)+1}</div>
+          <div class="card-main">
+            <div class="card-title-row">
+              <span class="card-title">${escapeHtml(o.title)}</span>
+              ${badge(o.priority)} ${diffBadge(o.difficulty)}
+              <span class="badge b-low">${escapeHtml(o.market)}</span>
+            </div>
+            <div class="summary">${escapeHtml(o.summary)}</div>
+          </div>
+          <div class="chev">▼</div>
+        </div>
+        <div class="expandable"><div class="expand-inner">
+          <div class="card-body">
+            <div class="row"><div class="k">🎯 痛点/需求</div><div class="v">${escapeHtml(o.pain)}</div></div>
+            <div class="row"><div class="k">📡 需求信号</div><div class="v">${escapeHtml(o.signal)}</div></div>
+            <div class="row"><div class="k">👥 目标客户</div><div class="v">${escapeHtml(o.customer)}</div></div>
+            <div class="row"><div class="k">🧩 产品形态</div><div class="v">${escapeHtml(o.product)}</div></div>
+            <div class="row"><div class="k">💰 变现路径</div><div class="v">${escapeHtml(o.monetize)}</div></div>
+            <div class="row"><div class="k">📊 收入模型</div><div class="v">${escapeHtml(o.revenue)}</div></div>
+            <div class="row"><div class="k">🚀 冷启动</div><div class="v">${escapeHtml(o.coldstart)}</div></div>
+            <div class="row"><div class="k">🔍 对标案例</div><div class="v">${escapeHtml(o.benchmark)}</div></div>
+            <div class="row"><div class="k">⚠️ 风险</div><div class="v">${escapeHtml(o.risk)}</div></div>
+          </div>
+        </div></div>
+      </article>`;
+    });
+    html += '</div>';
+  }
+  root.innerHTML = html;
+
+  // 卡片入场动效错峰
+  document.querySelectorAll('.card').forEach((el,i)=>{
+    el.style.animationDelay = (i*0.05)+'s';
+  });
+
+  document.getElementById('gen-time').textContent = new Date().toLocaleString('zh-CN',{hour12:false});
+}
+
+/* ============ 语音播报（免费 · 浏览器 speechSynthesis） ============ */
+let voices = [];
+function loadVoices(){
+  voices = window.speechSynthesis.getVoices() || [];
+}
+loadVoices();
+window.speechSynthesis.onvoiceschanged = loadVoices;
+
+function pickVoice(){
+  const zh = voices.filter(v=>/zh/i.test(v.lang));
+  const rank = (v)=>{
+    const n = v.name.toLowerCase();
+    if(/xiaoxiao/.test(n)) return 0;
+    if(/yunxi|yunyang/.test(n)) return 1;
+    if(/xiaoyi|huihui|xiaobei/.test(n)) return 2;
+    if(/neural|natural/.test(n)) return 3;
+    if(/zh-cn|zh_cn|zh-hk|zh-tw/.test(v.lang.toLowerCase())) return 4;
+    return 5;
+  };
+  const pool = zh.length ? zh : voices;
+  return pool.sort((a,b)=>rank(a)-rank(b))[0] || null;
+}
+
+function buildText(){
+  const parts = [REPORT.title + '。', '报告日期 ' + REPORT.date + '。'];
+  const social = REPORT.opportunities.filter(o=>o.domain==='social');
+  const industry = REPORT.opportunities.filter(o=>o.domain==='industry');
+  const sectionText = (label, list)=>{
+    if(!list.length) return;
+    parts.push(label + '，共 ' + list.length + ' 条机会。');
+    list.forEach((o,i)=>{
+      parts.push(`第 ${i+1} 条，${o.title}。${o.summary}。痛点：${o.pain}。变现路径：${o.monetize}。冷启动建议：${o.coldstart}。`);
+    });
+  };
+  sectionText(DOMAIN_META.social.name, social);
+  sectionText(DOMAIN_META.industry.name, industry);
+  return parts.join('\n');
+}
+
+function splitText(text){
+  const sentences = text.split(/(?<=[。！？!?；;\n])/);
+  const chunks = [];
+  let cur = '';
+  for(const s of sentences){
+    if((cur+s).length > 220 && cur){ chunks.push(cur); cur = ''; }
+    cur += s;
+  }
+  if(cur.trim()) chunks.push(cur);
+  return chunks;
+}
+
+const tts = {
+  speaking:false, paused:false, chunks:[], idx:0, voice:null,
+  start(){
+    if(!('speechSynthesis' in window)){ alert('当前浏览器不支持语音合成'); return; }
+    if(this.speaking && !this.paused){ this.pause(); return; }
+    if(this.speaking && this.paused){ this.resume(); return; }
+    if(!voices.length) loadVoices();
+    this.voice = pickVoice();
+    this.chunks = splitText(buildText());
+    this.idx = 0;
+    this.speaking = true; this.paused = false;
+    window.speechSynthesis.cancel();
+    this.speakNext();
+    updateBtn();
+  },
+  speakNext(){
+    if(!this.speaking || this.idx >= this.chunks.length){
+      this.stop(); return;
+    }
+    const u = new SpeechSynthesisUtterance(this.chunks[this.idx]);
+    if(this.voice) u.voice = this.voice;
+    u.lang = this.voice ? this.voice.lang : 'zh-CN';
+    u.rate = 1.0; u.pitch = 1.0;
+    u.onend = ()=>{ this.idx++; this.speakNext(); };
+    u.onerror = ()=>{ this.idx++; this.speakNext(); };
+    window.speechSynthesis.speak(u);
+  },
+  pause(){ this.paused = true; window.speechSynthesis.pause(); updateBtn(); },
+  resume(){ this.paused = false; window.speechSynthesis.resume(); updateBtn(); },
+  stop(){ this.speaking = false; this.paused = false; window.speechSynthesis.cancel(); updateBtn(); }
+};
+
+function updateBtn(){
+  const b = document.getElementById('ttsBtn');
+  const ico = document.getElementById('ttsIco');
+  const label = document.getElementById('ttsLabel');
+  const hint = document.getElementById('ttsHint');
+  if(tts.speaking && !tts.paused){
+    b.classList.add('playing'); ico.textContent='⏸'; label.textContent='暂停播报';
+    hint.textContent = '正在播报…（' + (tts.voice?tts.voice.name:'系统默认中文音色') + '）';
+  } else if(tts.speaking && tts.paused){
+    b.classList.add('playing'); ico.textContent='▶'; label.textContent='继续播报';
+    hint.textContent = '已暂停，点击继续';
+  } else {
+    b.classList.remove('playing'); ico.textContent='▶'; label.textContent='语音播报';
+    hint.textContent = '免费 · 浏览器内置语音合成 · 点击播报/暂停/继续';
+  }
+}
+
+document.getElementById('ttsBtn').addEventListener('click', ()=>tts.start());
+
+render();
+</script>
+</body>
+</html>
